@@ -13,9 +13,13 @@ const schipholApi = axios.create({
   },
 });
 
-export const getFlights = async () => {
+export const getFlights = async (scheduleDate) => {
   try {
-    const response = await schipholApi.get("/flights");
+    const response = await schipholApi.get("/flights", {
+      params: {
+        scheduleDate: scheduleDate,
+      },
+    });
     return response.data;
   } catch (error) {
     console.error("Error fetching flights:", error);

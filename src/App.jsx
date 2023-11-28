@@ -1,33 +1,23 @@
-// App.js
-import { useEffect, useState } from "react";
-import { getFlights } from "./config/config";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Home from "./pages/Home";
+import PageContainer from "./containers/PageContainer";
+import Header from "./components/navbar/Header";
+import Departures from "./pages/Departures";
+import Arrivals from "./pages/Arrivals";
 
 function App() {
-  const [flights, setFlights] = useState([]);
-
-  useEffect(() => {
-    const fetchFlights = async () => {
-      try {
-        const data = await getFlights();
-        setFlights(data);
-      } catch (error) {
-        console.error("Error fetching flights:", error);
-      }
-    };
-
-    fetchFlights();
-  }, []);
-
-  console.log(flights);
-
   return (
     <div>
-      <h1>Flight Information</h1>
-      {/* <ul>
-        {flights.map((flight) => (
-          <li key={flight.id}>{flight.flightName}</li>
-        ))}
-      </ul> */}
+      <Header></Header>
+      <PageContainer>
+        <Router>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/departures" element={<Departures />} />
+            <Route path="/arrivals" element={<Arrivals />} />
+          </Routes>
+        </Router>
+      </PageContainer>
     </div>
   );
 }
