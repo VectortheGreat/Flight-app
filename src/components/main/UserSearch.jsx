@@ -1,13 +1,19 @@
 import { addDays, format, subDays } from "date-fns";
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
+import { useDispatch } from "react-redux";
+import { setQueryDate } from "../../redux/reducerSlice";
+import { useNavigate, useParams } from "react-router-dom";
 
-const UserSearch = ({ setQueryDate }) => {
+const UserSearch = () => {
   UserSearch.propTypes = {
     setQueryDate: PropTypes.func.isRequired,
   };
   const [dates, setDates] = useState([]);
   const [selectedDate, setSelectedDate] = useState("");
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const param = useParams();
 
   useEffect(() => {
     const today = new Date();
@@ -39,13 +45,15 @@ const UserSearch = ({ setQueryDate }) => {
 
     setDates(formattedDates);
     setSelectedDate(formattedToday);
-    setQueryDate(formattedToday);
+    dispatch(setQueryDate(formattedToday));
   }, [setQueryDate]);
 
   const setQueryDateFunc = (e) => {
     const selectedDate = e.target.value;
     setSelectedDate(selectedDate);
-    setQueryDate(selectedDate);
+    dispatch(setQueryDate(selectedDate));
+    console.log(param);
+    navigate(`?datetime=${selectedDate}&query=${param.query || ""}`);
   };
 
   return (
