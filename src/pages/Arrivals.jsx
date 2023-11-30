@@ -5,8 +5,8 @@ const Arrivals = ({ flights, setRotate }) => {
   setRotate("A");
   return (
     <div>
-      <UserSearch></UserSearch> */
-      <Flights flights={flights}></Flights>
+      <UserSearch></UserSearch>
+      <Flights flights={flights} rotate={"A"}></Flights>
     </div>
   );
 };

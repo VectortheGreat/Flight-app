@@ -21,13 +21,15 @@ function App() {
     const fetchDatas = async () => {
       try {
         const dataFlight = await getFlights(queryDate, rotate);
-        dispatch(getFlightsArr(dataFlight.flights));
+        const filteredFlights = dataFlight.flights.filter(
+          (flight) => flight.expectedTimeBoarding !== null
+        );
+        // dispatch(getFlightsArr(dataFlight.flights));
+        dispatch(getFlightsArr(filteredFlights));
       } catch (error) {
         console.error("Error fetching flights:", error);
       }
     };
-
-    console.log(rotate);
     fetchDatas();
   }, [queryDate, rotate]);
   return (
@@ -54,11 +56,21 @@ function App() {
             />
             <Route
               path="/departures/flight/:id"
-              element={<DeparturesDetail></DeparturesDetail>}
+              element={
+                <DeparturesDetail
+                  flights={flights}
+                  setRotate={setRotate}
+                ></DeparturesDetail>
+              }
             />
             <Route
               path="/arrivals/flight/:id"
-              element={<ArrivalsDetail></ArrivalsDetail>}
+              element={
+                <ArrivalsDetail
+                  flights={flights}
+                  setRotate={setRotate}
+                ></ArrivalsDetail>
+              }
             />
           </Routes>
         </PageContainer>

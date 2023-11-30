@@ -47,23 +47,21 @@ const Flights = ({ flights, rotate }) => {
 
     fetchDatas();
   }, [flights]);
-
-  const navigateFlightDetail = () => {
-    //  const rotateDetail = rotate === "D" ? "departures" : rotate==="A"?"arrivals"
+  const navigateFlightDetail = (index) => {
     let rotateDetail = "";
     if (rotate === "D") {
       rotateDetail = "departures";
     } else if (rotate === "A") {
       rotateDetail = "arrivals";
     }
-    // navigate(`/${rotateDetail}`);
-    console.log(rotateDetail);
+
+    navigate(`/${rotateDetail}/flight/${flights[index].id}`);
   };
   return (
     <div>
       <ul className="mt-3 space-y-3">
         {flights.map((flight, index) => (
-          <li key={flight.id} onClick={navigateFlightDetail}>
+          <li key={flight.id} onClick={() => navigateFlightDetail(index)}>
             <div className="bg-white hover:shadow-2xl cursor-pointer shadow-md text-center rounded-sm py-6 grid grid-cols-4">
               <h1>{flight.scheduleTime}</h1>
               <div className="space-x-2">

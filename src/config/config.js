@@ -14,10 +14,16 @@ const schipholApi = axios.create({
   },
 });
 
-const limitedApi = rateLimit(schipholApi, {
-  maxRequests: 5,
-  perMilliseconds: 1000,
-});
+const date = new Date();
+const formatTimeComponent = (component) => {
+  return component < 10 ? "0" + component : component;
+};
+const hours = formatTimeComponent(date.getHours());
+const minutes = formatTimeComponent(date.getMinutes());
+const fromDateTime = `${date.getFullYear()}-${
+  date.getMonth() + 1
+}-${date.getDate()}T${hours}:${minutes}:00`;
+console.log(fromDateTime);
 
 export const getFlights = async (scheduleDate, flightDirection) => {
   try {
@@ -25,8 +31,20 @@ export const getFlights = async (scheduleDate, flightDirection) => {
       params: {
         scheduleDate: scheduleDate,
         flightDirection: flightDirection,
+        fromDateTime: fromDateTime,
+        searchDateTimeField: "scheduleDateTime",
       },
     });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching flights:", error);
+    throw error;
+  }
+};
+
+export const getFlightsById = async (id) => {
+  try {
+    const response = await schipholApi.get(`/flights/${id}`);
     return response.data;
   } catch (error) {
     console.error("Error fetching flights:", error);
