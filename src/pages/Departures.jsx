@@ -1,12 +1,16 @@
 import Flights from "../components/main/Flights";
 import UserSearch from "../components/main/UserSearch";
+import PropTypes from "prop-types";
 
-const Departures = ({ flights, setRotate }) => {
+const Departures = ({ setRotate }) => {
+  Departures.propTypes = {
+    setRotate: PropTypes.string.isRequired,
+  };
   setRotate("D");
   return (
     <div>
       <UserSearch></UserSearch>
-      <Flights flights={flights} rotate={"D"}></Flights>
+      <Flights rotate={"D"}></Flights>
     </div>
   );
 };

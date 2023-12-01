@@ -13,14 +13,30 @@ import DeparturesDetail from "./pages/DeparturesDetail";
 
 function App() {
   const dispatch = useDispatch();
-
   const flights = useSelector((state) => state.reducer.flights);
   const queryDate = useSelector((state) => state.reducer.queryDate);
   const [rotate, setRotate] = useState("");
   useEffect(() => {
+    const date = new Date();
+    const formatTimeComponent = (component) => {
+      return component < 10 ? "0" + component : component;
+    };
+    const hours = formatTimeComponent(date.getHours());
+    const minutes = formatTimeComponent(date.getMinutes());
+    const datee = formatTimeComponent(date.getDate());
+    const months = formatTimeComponent(date.getMonth() + 1);
+    const fromDateTime = `${date.getFullYear()}-${months}-${datee}T${hours}:${minutes}:00`;
+    console.log(fromDateTime);
     const fetchDatas = async () => {
       try {
-        const dataFlight = await getFlights(queryDate, rotate);
+        const dataFlight = await getFlights(
+          queryDate,
+          rotate,
+          fromDateTime,
+          null,
+          0,
+          "+scheduleTime"
+        );
         // const filteredFlights = dataFlight.flights.filter(
         //   (flight) => flight.expectedTimeBoarding !== null
         // );
@@ -41,12 +57,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route
               path="/departures"
-              element={
-                <Departures
-                  flights={flights}
-                  setRotate={setRotate}
-                ></Departures>
-              }
+              element={<Departures setRotate={setRotate}></Departures>}
             />
             <Route
               path="/arrivals"

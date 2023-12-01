@@ -14,25 +14,24 @@ const schipholApi = axios.create({
   },
 });
 
-const date = new Date();
-const formatTimeComponent = (component) => {
-  return component < 10 ? "0" + component : component;
-};
-const hours = formatTimeComponent(date.getHours());
-const minutes = formatTimeComponent(date.getMinutes());
-const datee = formatTimeComponent(date.getDate());
-const months = formatTimeComponent(date.getMonth() + 1);
-const fromDateTime = `${date.getFullYear()}-${months}-${datee}T${hours}:${minutes}:00`;
-console.log(fromDateTime);
-
-export const getFlights = async (scheduleDate, flightDirection) => {
+export const getFlights = async (
+  scheduleDate,
+  flightDirection,
+  fromDateTime,
+  toDateTime,
+  page,
+  sort
+) => {
   try {
     const response = await schipholApi.get("/flights", {
       params: {
         scheduleDate: scheduleDate,
         flightDirection: flightDirection,
         fromDateTime: fromDateTime,
+        toDateTime: toDateTime,
         searchDateTimeField: "scheduleDateTime",
+        page: page,
+        sort: sort,
       },
     });
     return response.data;
