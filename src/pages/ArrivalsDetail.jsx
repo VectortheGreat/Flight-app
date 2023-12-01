@@ -1,5 +1,11 @@
+import PageDetail from "../components/Details/PageDetail";
+
 const ArrivalsDetail = () => {
-  return <div>ArrivalsDetail</div>;
+  return (
+    <div>
+      <PageDetail></PageDetail>
+    </div>
+  );
 };
 
 export default ArrivalsDetail;

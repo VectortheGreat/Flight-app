@@ -1,25 +1,37 @@
 import PropTypes from "prop-types";
-import { getAirlines, getDestinations, getFlights } from "../../config/config";
+import {
+  getAirlines,
+  getDestinations,
+  getFlightStatus,
+  getFlights,
+} from "../../config/config";
 import { useEffect, useState } from "react";
 import { FaArrowRight } from "react-icons/fa6";
-import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { setRotateParam } from "../../redux/reducerSlice";
 
 const Flights = ({ rotate }) => {
   Flights.propTypes = {
     rotate: PropTypes.string.isRequired,
   };
   const flights = useSelector((state) => state.reducer.flights);
+  const rotateDetail = useSelector((state) => state.reducer.rotateParam);
   const [airlineData, setAirlineData] = useState([]);
   const [destinationData, setDestinationData] = useState([]);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
+    if (rotate === "D") {
+      dispatch(setRotateParam("departures"));
+    } else if (rotate === "A") {
+      dispatch(setRotateParam("arrivals"));
+    }
     const fetchDatas = async () => {
       try {
         const airlinePromises = flights.map(async (flight) => {
           const dataAirline = await getAirlines(flight.prefixIATA);
-          //console.log(flight.prefixIATA);
           return dataAirline;
         });
 
@@ -43,65 +55,13 @@ const Flights = ({ rotate }) => {
 
     fetchDatas();
   }, [flights]);
-  const navigateFlightDetail = (index) => {
-    let rotateDetail = "";
-    rotateDetail =
-      rotate === "D" ? "departures" : rotate === "A" ? "arrivals" : undefined;
-    navigate(`/${rotateDetail}/flight/${flights[index].id}`);
-  };
-  //console.log(flights);
 
-  const getFlightValue = (flight) => {
-    let index = 0;
-    if (flight.publicFlightState.flightStates.length > 1) {
-      index = 1;
-    }
-    switch (flight.publicFlightState.flightStates[index]) {
-      case "SCH":
-        return "On Schedule";
-      case "DEL":
-        return "Delayed";
-      case "WIL":
-        return "Wait in Longue";
-      case "GTO":
-        return "Gate Open";
-      case "BRD":
-        return "Boarding";
-      case "GCL":
-        return "Gate Closing";
-      case "GTD":
-        return "Gate Closed";
-      case "DEP":
-        return "Departed";
-      case "CNX":
-        return "Cancelled";
-      case "GCH":
-        return "Gate Change";
-      case "TOM":
-        return "Tomorrow";
-      case "AIR":
-        return "Airborne";
-      case "EXP":
-        return "Expected Landing";
-      case "FIR":
-        return "Flight Information Region";
-      case "LND":
-        return "Landed";
-      case "FIB":
-        return "FIBAG";
-      case "ARR":
-        return "Arrived Flight has been completely handled";
-      case "DIV":
-        return "Diverted";
-      default:
-        return `Undefined Statue: ${flight.publicFlightState.flightStates[index]}`;
-    }
+  const navigateFlightDetail = (index) => {
+    navigate(`/${rotateDetail}/flight/${flights[index].id}`);
   };
 
   //? TEMPORARY
   const date = new Date();
-
-  // console.warn(fromDateTime);
 
   const queryDate = useSelector((state) => state.reducer.queryDate);
 
@@ -123,7 +83,9 @@ const Flights = ({ rotate }) => {
         queryDate,
         rotate,
         fromDateTime,
-        pageCounter
+        null,
+        pageCounter,
+        "+scheduleTime"
       );
       const newElements = dataFlight.flights.map((flight, index) => (
         <li key={flight.id} onClick={() => navigateFlightDetail(index)}>
@@ -139,13 +101,16 @@ const Flights = ({ rotate }) => {
                 <span> {airlineData[index]?.publicName}</span>
               </h1>
             </div>
-            <h1>{getFlightValue(flight)}</h1>
-            <a className="flex items-center justify-center space-x-2">
+            <h1>{getFlightStatus(flight)}</h1>
+            <Link
+              to={`/${rotateDetail}/flight/${flights[index].id}`}
+              className="flex items-center justify-center space-x-2"
+            >
               <span>Details</span>
               <span className="flex items-center">
                 <FaArrowRight />
               </span>
-            </a>
+            </Link>
           </div>
         </li>
       ));
@@ -157,7 +122,7 @@ const Flights = ({ rotate }) => {
   };
 
   const [earlierFlightsMap, setEarlierFlightsMap] = useState([]);
-  const [pageEarlierCounter, setPageEarlierCounter] = useState(1);
+  const [pageEarlierCounter, setPageEarlierCounter] = useState(0);
   const moreEarlierFlights = async () => {
     const formatTimeComponent = (component) => {
       return component < 10 ? "0" + component : component;
@@ -193,13 +158,16 @@ const Flights = ({ rotate }) => {
                 <span> {airlineData[index]?.publicName}</span>
               </h1>
             </div>
-            <h1>{getFlightValue(flight)}</h1>
-            <a className="flex items-center justify-center space-x-2">
+            <h1>{getFlightStatus(flight)}</h1>
+            <Link
+              to={`/${rotateDetail}/flight/${flights[index].id}`}
+              className="flex items-center justify-center space-x-2"
+            >
               <span>Details</span>
               <span className="flex items-center">
                 <FaArrowRight />
               </span>
-            </a>
+            </Link>
           </div>
         </li>
       ));
@@ -231,11 +199,11 @@ const Flights = ({ rotate }) => {
           >
             Show earlier flights
           </div>
-          {earlierFlightsMap}
         </li>
+        {earlierFlightsMap}
         {flights.map((flight, index) => (
-          <li key={flight.id} onClick={() => navigateFlightDetail(index)}>
-            <div className="bg-white hover:shadow-2xl cursor-pointer shadow-md text-center rounded-sm py-6 grid grid-cols-4">
+          <li key={flight.id}>
+            <div className="bg-white hover:shadow-2xl shadow-md text-center rounded-sm py-6 grid grid-cols-4">
               <h1>{flight.scheduleTime}</h1>
               <div className="space-x-2">
                 <h1>
@@ -247,17 +215,21 @@ const Flights = ({ rotate }) => {
                   <span> {airlineData[index]?.publicName}</span>
                 </h1>
               </div>
-              <h1>{getFlightValue(flight)}</h1>
-              <a className="flex items-center justify-center space-x-2">
+              <h1>{getFlightStatus(flight)}</h1>
+              <Link
+                onClick={() => navigateFlightDetail(index)}
+                to={`/${rotateDetail}/flight/${flights[index].id}`}
+                className="flex items-center justify-center space-x-2 cursor-pointer"
+              >
                 <span>Details</span>
                 <span className="flex items-center">
                   <FaArrowRight />
                 </span>
-              </a>
+              </Link>
             </div>
           </li>
         ))}
-        <li>{laterFlightsMap}</li>
+        {laterFlightsMap}
         <li>
           <div
             className="bg-gray-100 text-blue-600 hover:shadow-2xl cursor-pointer shadow-md text-center rounded-sm py-1 grid grid-cols-1 my-2"

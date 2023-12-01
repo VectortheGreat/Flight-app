@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   flights: [],
   queryDate: "",
+  rotateParam: "",
 };
 
 const reducer = createSlice({
@@ -14,11 +15,13 @@ const reducer = createSlice({
     },
     setQueryDate: (state, action) => {
       state.queryDate = action.payload;
-      console.log(state.queryDate);
+    },
+    setRotateParam: (state, action) => {
+      state.rotateParam = action.payload;
     },
   },
 });
 
-export const { getFlightsArr, setQueryDate } = reducer.actions;
+export const { getFlightsArr, setQueryDate, setRotateParam } = reducer.actions;
 
 export default reducer.reducer;
