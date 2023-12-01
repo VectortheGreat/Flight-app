@@ -20,9 +20,9 @@ const formatTimeComponent = (component) => {
 };
 const hours = formatTimeComponent(date.getHours());
 const minutes = formatTimeComponent(date.getMinutes());
-const fromDateTime = `${date.getFullYear()}-${
-  date.getMonth() + 1
-}-${date.getDate()}T${hours}:${minutes}:00`;
+const datee = formatTimeComponent(date.getDate());
+const months = formatTimeComponent(date.getMonth() + 1);
+const fromDateTime = `${date.getFullYear()}-${months}-${datee}T${hours}:${minutes}:00`;
 console.log(fromDateTime);
 
 export const getFlights = async (scheduleDate, flightDirection) => {
@@ -65,6 +65,21 @@ export const getAirlines = async (airline) => {
 export const getDestinations = async (destinations) => {
   try {
     const response = await schipholApi.get(`/destinations/${destinations}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching flights:", error);
+    throw error;
+  }
+};
+
+export const getAircrafttypes = async (iataMain, iataSub) => {
+  try {
+    const response = await schipholApi.get(`/aircrafttypes`, {
+      params: {
+        iataMain: iataMain,
+        iataSub: iataSub,
+      },
+    });
     return response.data;
   } catch (error) {
     console.error("Error fetching flights:", error);

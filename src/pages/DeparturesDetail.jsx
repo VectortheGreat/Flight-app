@@ -1,5 +1,10 @@
 import { useLocation } from "react-router-dom";
-import { getAirlines, getDestinations, getFlightsById } from "../config/config";
+import {
+  getAircrafttypes,
+  getAirlines,
+  getDestinations,
+  getFlightsById,
+} from "../config/config";
 import { useEffect, useState } from "react";
 
 const DeparturesDetail = () => {
@@ -10,6 +15,7 @@ const DeparturesDetail = () => {
   const [flight, setFlight] = useState("");
   const [destination, setDestination] = useState("");
   const [airlineData, setAirlineData] = useState("");
+  const [airCraftData, setAirCraftData] = useState("");
 
   useEffect(() => {
     let isMounted = true;
@@ -23,6 +29,13 @@ const DeparturesDetail = () => {
 
           const dataAirline = await getAirlines(dataFlight.prefixIATA);
           setAirlineData(dataAirline);
+
+          const dataAirCraftType = await getAircrafttypes(
+            dataFlight.aircraftType?.iataMain,
+            dataFlight.aircraftType?.iataSub
+          );
+          setAirCraftData(dataAirCraftType.aircraftTypes[0]);
+
           const dataDestinations = await getDestinations(
             dataFlight.route.destinations[0]
           );
@@ -47,7 +60,6 @@ const DeparturesDetail = () => {
   }, [lastElement]);
 
   console.log(flight);
-  console.log(airlineData);
 
   return (
     <div className="bg-gray-200 p-8">
@@ -72,9 +84,7 @@ const DeparturesDetail = () => {
         </div>
         <div>
           <h2 className="text-lg font-semibold">Aircraft Type</h2>
-          <h2 className="text-lg">
-            {flight.aircraftType?.iataMain} - {flight.aircraftType?.iataSub}
-          </h2>
+          <h2 className="text-lg">{airCraftData.shortDescription}</h2>
         </div>
         <div>
           <h2 className="text-lg font-semibold">Gate</h2>

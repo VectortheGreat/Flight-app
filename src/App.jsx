@@ -21,11 +21,11 @@ function App() {
     const fetchDatas = async () => {
       try {
         const dataFlight = await getFlights(queryDate, rotate);
-        const filteredFlights = dataFlight.flights.filter(
-          (flight) => flight.expectedTimeBoarding !== null
-        );
-        // dispatch(getFlightsArr(dataFlight.flights));
-        dispatch(getFlightsArr(filteredFlights));
+        // const filteredFlights = dataFlight.flights.filter(
+        //   (flight) => flight.expectedTimeBoarding !== null
+        // );
+        dispatch(getFlightsArr(dataFlight.flights));
+        // dispatch(getFlightsArr(filteredFlights));
       } catch (error) {
         console.error("Error fetching flights:", error);
       }

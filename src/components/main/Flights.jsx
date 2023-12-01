@@ -49,14 +49,57 @@ const Flights = ({ flights, rotate }) => {
   }, [flights]);
   const navigateFlightDetail = (index) => {
     let rotateDetail = "";
-    if (rotate === "D") {
-      rotateDetail = "departures";
-    } else if (rotate === "A") {
-      rotateDetail = "arrivals";
-    }
-
+    rotateDetail =
+      rotate === "D" ? "departures" : rotate === "A" ? "arrivals" : undefined;
     navigate(`/${rotateDetail}/flight/${flights[index].id}`);
   };
+  console.log(flights);
+
+  const getFlightValue = (flight) => {
+    let result;
+
+    console.log(flight.publicFlightState.flightStates[1]);
+    if (flight.publicFlightState.flightStates.length > 1) {
+      switch (flight.publicFlightState.flightStates[1]) {
+        case "SCH":
+          result = "on Schedule";
+          break;
+        case "GCH":
+          result = "Gate Change";
+          break;
+        case "DEL":
+          result = "Delayed";
+          break;
+        case "GTO":
+          result = "Gate Open";
+          break;
+        default:
+          result = "ERROR";
+          break;
+      }
+    } else {
+      switch (flight.publicFlightState.flightStates[0]) {
+        case "SCH":
+          result = "on Schedule";
+          break;
+        case "GCH":
+          result = "Gate Change";
+          break;
+        case "DEL":
+          result = "Delayed";
+          break;
+        case "GTO":
+          result = "Gate Open";
+          break;
+        default:
+          result = "ERROR";
+          break;
+      }
+    }
+
+    return result;
+  };
+
   return (
     <div>
       <ul className="mt-3 space-y-3">
@@ -74,7 +117,10 @@ const Flights = ({ flights, rotate }) => {
                   <span> {airlineData[index]?.publicName}</span>
                 </h1>
               </div>
-              <h1>{flight.flightName}</h1>
+              <h1>
+                {getFlightValue(flight)} (
+                {flight.publicFlightState.flightStates})
+              </h1>
               <a className="flex items-center justify-center space-x-2">
                 <span>Details</span>
                 <span className="flex items-center">
