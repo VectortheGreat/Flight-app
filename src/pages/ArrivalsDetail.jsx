@@ -1,4 +1,4 @@
-import PageDetail from "../components/Details/PageDetail";
+import PageDetail from "../components/details/PageDetail";
 
 const ArrivalsDetail = () => {
   return (

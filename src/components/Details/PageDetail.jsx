@@ -11,7 +11,10 @@ import {
 const PageDetail = () => {
   const location = useLocation();
   const pathArray = location.pathname.split("/");
+  const rotate = pathArray[pathArray.length - 3];
   const lastElement = pathArray[pathArray.length - 1];
+
+  console.log(rotate);
 
   const [flight, setFlight] = useState("");
   const [destination, setDestination] = useState("");
@@ -72,8 +75,19 @@ const PageDetail = () => {
           <h2 className="text-lg">{flight.scheduleDate}</h2>
         </div>
         <div>
-          <h2 className="text-lg font-semibold">Departure time</h2>
-          <h2 className="text-lg">{flight.scheduleTime}</h2>
+          {rotate === "departures" && (
+            <>
+              <h2 className="text-lg font-semibold">Departure time</h2>
+              <h2 className="text-lg">{flight.scheduleTime}</h2>
+            </>
+          )}
+          {rotate === "arrivals" && (
+            <>
+              <h2 className="text-lg font-semibold">Arrival time</h2>
+              <h2 className="text-lg">{flight.scheduleTime}</h2>
+              <h2 className="text-lg">{flight.actualLandingTime}</h2>
+            </>
+          )}
         </div>
         <div>
           <h2 className="text-lg font-semibold">Airline Code</h2>
@@ -88,8 +102,20 @@ const PageDetail = () => {
           <h2 className="text-lg">{airCraftData.shortDescription}</h2>
         </div>
         <div>
-          <h2 className="text-lg font-semibold">Gate</h2>
-          <h2 className="text-lg">{flight.gate}</h2>
+          {rotate === "departures" && (
+            <>
+              <h2 className="text-lg font-semibold">Gate</h2>
+              <h2 className="text-lg">{flight.gate}</h2>
+            </>
+          )}
+          {rotate === "arrivals" && (
+            <>
+              <h2 className="text-lg font-semibold">Baggage Belt</h2>
+              <h2 className="text-lg">
+                {flight.baggageClaim?.belts[0] ?? "-"}
+              </h2>
+            </>
+          )}
         </div>
       </div>
       <div className="mt-8">

@@ -65,6 +65,7 @@ const UserSearch = () => {
           </option>
         ))}
       </select>
+      <input type="text" placeholder="" />
     </div>
   );
 };
