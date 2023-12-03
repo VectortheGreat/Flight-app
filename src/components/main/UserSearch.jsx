@@ -52,7 +52,7 @@ const UserSearch = () => {
     const selectedDate = e.target.value;
     setSelectedDate(selectedDate);
     dispatch(setQueryDate(selectedDate));
-    console.log(param);
+    console.log(selectedDate);
     navigate(`?datetime=${selectedDate}&query=${param.query || ""}`);
   };
 

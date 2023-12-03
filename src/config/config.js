@@ -37,7 +37,7 @@ export const getFlights = async (
     return response.data;
   } catch (error) {
     console.error("Error fetching flights:", error);
-    throw error;
+    //throw error;
   }
 };
 

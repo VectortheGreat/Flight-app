@@ -4,27 +4,26 @@ import {
   getAirlines,
   getDestinations,
   getFlightStatus,
-  getFlights,
-} from "../../config/config";
+} from "../../../config/config";
 import React, { useEffect, useState } from "react";
 import { FaArrowRight } from "react-icons/fa6";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { setRotateParam } from "../../redux/reducerSlice";
+import { setRotateParam } from "../../../redux/reducerSlice";
+import EarlierFlightsComp from "./EarlierFlightsComp";
+import LaterFlightsComp from "./LaterFlightsComp";
 
 const Flights = ({ rotate }) => {
   Flights.propTypes = {
     rotate: PropTypes.string.isRequired,
   };
   const flights = useSelector((state) => state.reducer.flights);
-
   const rotateDetail = useSelector((state) => state.reducer.rotateParam);
   const [airlineData, setAirlineData] = useState([]);
   const [destinationData, setDestinationData] = useState([]);
   const [airCraftData, setAirCraftData] = useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
   useEffect(() => {
     if (rotate === "D") {
       dispatch(setRotateParam("departures"));
@@ -38,10 +37,8 @@ const Flights = ({ rotate }) => {
           const dataAirline = await getAirlines(flight.prefixIATA);
           return dataAirline;
         });
-
         const resolvedAirlineData = await Promise.all(airlinePromises);
         setAirlineData(resolvedAirlineData);
-
         //* Destination DATA
         const destinationPromises = flights.map(async (flight) => {
           const dataDestination = await getDestinations(
@@ -51,7 +48,6 @@ const Flights = ({ rotate }) => {
         });
         const resolvedDestinationData = await Promise.all(destinationPromises);
         setDestinationData(resolvedDestinationData);
-
         //* Aircraft DATA
         const airCraftTypePromises = flights.map(async (flight) => {
           const dataAirCraftType = await getAircrafttypes(
@@ -68,91 +64,28 @@ const Flights = ({ rotate }) => {
         console.error("Error fetching flights:", error);
       }
     };
-
     fetchDatas();
-    console.log(flights);
-  }, [flights]);
+  }, [flights, rotate]);
 
-  const navigateFlightDetail = (index) => {
-    navigate(`/${rotateDetail}/flight/${flights[index].id}`);
-  };
-  //? TEMPORARY
-  const date = new Date();
-
-  const queryDate = useSelector((state) => state.reducer.queryDate);
-
-  const [laterFlightsMap, setlaterFlightsMap] = useState([]);
-  const [pageCounter, setPageCounter] = useState(1);
-  const moreLaterFlights = async () => {
-    const formatTimeComponent = (component) => {
-      return component < 10 ? "0" + component : component;
-    };
-    const hours = formatTimeComponent(date.getHours());
-    const minutes = formatTimeComponent(date.getMinutes());
-    const datee = formatTimeComponent(date.getDate());
-    const months = formatTimeComponent(date.getMonth() + 1);
-    const fromDateTime = `${date.getFullYear()}-${months}-${datee}T${hours}:${minutes}:00`;
-    try {
-      setPageCounter(pageCounter + 1);
-      const dataFlight = await getFlights(
-        queryDate,
-        rotate,
-        fromDateTime,
-        null,
-        pageCounter,
-        "+scheduleTime"
-      );
-      const newElements = dataFlight.flights.map((flight, index) =>
-        //prettier-ignore
-        createFlightElement(flight,index,navigateFlightDetail,flights,rotateDetail)
-      );
-
-      setlaterFlightsMap((prevElements) => [...prevElements, ...newElements]);
-    } catch (error) {
-      console.error("Error fetching more flights:", error);
-    }
+  const navigateFlightDetail = (flightId) => {
+    navigate(`/${rotateDetail}/flight/${flightId}`);
   };
 
-  const [earlierFlightsMap, setEarlierFlightsMap] = useState([]);
-  const [pageEarlierCounter, setPageEarlierCounter] = useState(0);
-  const moreEarlierFlights = async () => {
-    const formatTimeComponent = (component) => {
-      return component < 10 ? "0" + component : component;
-    };
-    const hours = formatTimeComponent(date.getHours());
-    const minutes = formatTimeComponent(date.getMinutes());
-    const datee = formatTimeComponent(date.getDate());
-    const months = formatTimeComponent(date.getMonth() + 1);
-    const fromDateTime = `${date.getFullYear()}-${months}-${datee}T00:00:00`;
-    const toDateTime = `${date.getFullYear()}-${months}-${datee}T${hours}:${minutes}:00`;
-    try {
-      setPageEarlierCounter(pageEarlierCounter + 1);
-      const dataFlight = await getFlights(
-        queryDate,
-        rotate,
-        fromDateTime,
-        toDateTime,
-        pageEarlierCounter,
-        "-scheduleTime"
-      );
-      const newElements = dataFlight.flights.map((flight, index) =>
-        //prettier-ignore
-        createFlightElement(flight,index,navigateFlightDetail,flights,rotateDetail)
-      );
-
-      setEarlierFlightsMap((prevElements) => [
-        ...newElements.reverse(),
-        ...prevElements,
-      ]);
-    } catch (error) {
-      console.error("Error fetching more flights:", error);
-    }
-  };
-
+  console.log("Flights: ", flights);
+  // console.log("Destinations: ", destinationData);
+  console.log("airCraftData: ", airCraftData);
   //prettier-ignore
-  const createFlightElement = (flight,index,navigateFlightDetail,flights,rotateDetail) => (
+  const createFlightElement = (
+    flight,
+    index,
+    navigateFlightDetail,
+    flights,
+    rotateDetail
+  ) => (
     <li key={flight.id}>
-      <div className="bg-white hover:shadow-2xl shadow-md text-center rounded-sm py-6 grid grid-cols-5">
+      <div className="bg-white hover:shadow-2xl shadow-md text-center rounded-sm py-6 grid grid-cols-7">
+        <h1>{index}</h1>
+        <h1>{flight.id}</h1>
         <h1>{flight.scheduleTime}</h1>
         <div className="space-x-2">
           <h1>
@@ -164,19 +97,29 @@ const Flights = ({ rotate }) => {
             <span> {airlineData[index]?.publicName}</span>
           </h1>
         </div>
-        <h1>{airCraftData[index]?.aircraftTypes[0].shortDescription}</h1>
+        <h1>
+          {airCraftData &&
+          airCraftData[index] &&
+          airCraftData[index].aircraftTypes &&
+          airCraftData[index].aircraftTypes[0]
+            ? airCraftData[index].aircraftTypes[0].shortDescription
+            : "-"}
+        </h1>
+
         <h1>{getFlightStatus(flight)}</h1>
         <div className="flex items-center justify-center space-x-2 text-blue-500 hover:text-blue-700">
           <Link
             className="cursor-pointer"
-            onClick={() => navigateFlightDetail(index)}
-            to={`/${rotateDetail}/flight/${flights[index].id}`}
+            // onClick={() => navigateFlightDetail(index)}
+            // to={`/${rotateDetail}/flight/${flights[index].id}`}
+            onClick={() => navigateFlightDetail(flight.id)}
+            to={`/${rotateDetail}/flight/${flight.id}`}
           >
             Details
           </Link>
           <Link
-            onClick={() => navigateFlightDetail(index)}
-            to={`/${rotateDetail}/flight/${flights[index].id}`}
+            onClick={() => navigateFlightDetail(flight.id)}
+            to={`/${rotateDetail}/flight/${flight.id}`}
             className="flex items-center cursor-pointer"
           >
             <FaArrowRight />
@@ -185,7 +128,6 @@ const Flights = ({ rotate }) => {
       </div>
     </li>
   );
-
   return (
     <div>
       <div>
@@ -224,15 +166,11 @@ const Flights = ({ rotate }) => {
             <h1>Details</h1>
           </div>
         </li>
-        <li>
-          <div
-            className="bg-gray-100 text-blue-600 hover:shadow-2xl shadow-md text-center rounded-sm py-1 grid grid-cols-1 my-2 cursor-pointer"
-            onClick={moreEarlierFlights}
-          >
-            Show earlier flights
-          </div>
-        </li>
-        {earlierFlightsMap}
+        <EarlierFlightsComp
+          rotate={rotate}
+          // createFlightElement={createFlightElement}
+          // navigateFlightDetail={navigateFlightDetail}
+        ></EarlierFlightsComp>
         {flights.map((flight, index) => (
           <React.Fragment key={flight.id}>
             {createFlightElement(
@@ -244,16 +182,11 @@ const Flights = ({ rotate }) => {
             )}
           </React.Fragment>
         ))}
-
-        {laterFlightsMap}
-        <li>
-          <div
-            className="bg-gray-100 text-blue-600 hover:shadow-2xl cursor-pointer shadow-md text-center rounded-sm py-1 grid grid-cols-1 my-2"
-            onClick={moreLaterFlights}
-          >
-            Show later flights
-          </div>
-        </li>
+        <LaterFlightsComp
+          rotate={rotate}
+          // createFlightElement={createFlightElement}
+          // navigateFlightDetail={navigateFlightDetail}
+        ></LaterFlightsComp>
       </ul>
     </div>
   );

@@ -1,4 +1,4 @@
-import Flights from "../components/main/Flights";
+import Flights from "../components/main/flights/Flights";
 import UserSearch from "../components/main/UserSearch";
 
 const Arrivals = ({ flights, setRotate }) => {

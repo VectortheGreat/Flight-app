@@ -23,10 +23,7 @@ function App() {
     };
     const hours = formatTimeComponent(date.getHours());
     const minutes = formatTimeComponent(date.getMinutes());
-    const datee = formatTimeComponent(date.getDate());
-    const months = formatTimeComponent(date.getMonth() + 1);
-    const fromDateTime = `${date.getFullYear()}-${months}-${datee}T${hours}:${minutes}:00`;
-    console.log(fromDateTime);
+    const fromDateTime = `${queryDate}T${hours}:${minutes}:00`;
     const fetchDatas = async () => {
       try {
         const dataFlight = await getFlights(
@@ -37,11 +34,10 @@ function App() {
           0,
           "+scheduleTime"
         );
-        // const filteredFlights = dataFlight.flights.filter(
-        //   (flight) => flight.expectedTimeBoarding !== null
-        // );
+
+        console.warn(queryDate);
+        console.warn(fromDateTime);
         dispatch(getFlightsArr(dataFlight.flights));
-        // dispatch(getFlightsArr(filteredFlights));
       } catch (error) {
         console.error("Error fetching flights:", error);
       }
