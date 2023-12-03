@@ -4,18 +4,10 @@ import { useDispatch, useSelector } from "react-redux";
 import PropTypes from "prop-types";
 import { getNewFlightsArr } from "../../../redux/reducerSlice";
 
-const EarlierFlightsComp = ({
-  rotate,
-  // createFlightElement,
-  // navigateFlightDetail,
-}) => {
+const EarlierFlightsComp = ({ rotate }) => {
   EarlierFlightsComp.propTypes = {
     rotate: PropTypes.string.isRequired,
-    createFlightElement: PropTypes.func.isRequired,
-    navigateFlightDetail: PropTypes.func.isRequired,
   };
-  // const flights = useSelector((state) => state.reducer.flights);
-  // const rotateDetail = useSelector((state) => state.reducer.rotateParam);
   const queryDate = useSelector((state) => state.reducer.queryDate);
   const dispatch = useDispatch();
 
@@ -25,9 +17,6 @@ const EarlierFlightsComp = ({
   };
   const hours = formatTimeComponent(date.getHours());
   const minutes = formatTimeComponent(date.getMinutes());
-  // const datee = formatTimeComponent(date.getDate());
-  // const months = formatTimeComponent(date.getMonth() + 1);
-  // const [earlierFlightsMap, setEarlierFlightsMap] = useState([]);
   const [pageEarlierCounter, setPageEarlierCounter] = useState(0);
 
   const moreEarlierFlights = async () => {
@@ -38,15 +27,6 @@ const EarlierFlightsComp = ({
       setPageEarlierCounter(pageEarlierCounter + 1);
       //prettier-ignore
       const dataFlight = await getFlights(queryDate,rotate,fromDateTime,toDateTime,pageEarlierCounter,"-scheduleTime");
-      // const newElements = dataFlight.flights.map((flight, index) =>
-      //   //prettier-ignore
-      //   createFlightElement(flight,index,navigateFlightDetail,flights,rotateDetail)
-      // );
-
-      // setEarlierFlightsMap((prevElements) => [
-      //   ...newElements.reverse(),
-      //   ...prevElements,
-      // ]);
       dispatch(getNewFlightsArr([...dataFlight.flights].reverse()));
     } catch (error) {
       console.error("Error fetching more flights:", error);
@@ -62,7 +42,6 @@ const EarlierFlightsComp = ({
           Show earlier flights
         </div>
       </li>
-      {/* {earlierFlightsMap} */}
     </div>
   );
 };

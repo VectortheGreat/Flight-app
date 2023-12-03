@@ -11,18 +11,6 @@ const Header = () => {
       >
         Flight App
       </h1>
-      <h1
-        className="text-white text-2xl font-bold cursor-pointer"
-        onClick={() => navigate("/departures")}
-      >
-        Departures
-      </h1>
-      <h1
-        className="text-white text-2xl font-bold cursor-pointer"
-        onClick={() => navigate("/arrivals")}
-      >
-        Arrivals
-      </h1>
     </header>
   );
 };

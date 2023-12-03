@@ -34,9 +34,7 @@ function App() {
           0,
           "+scheduleTime"
         );
-
-        console.warn(queryDate);
-        console.warn(fromDateTime);
+        console.log(dataFlight);
         dispatch(getFlightsArr(dataFlight.flights));
       } catch (error) {
         console.error("Error fetching flights:", error);

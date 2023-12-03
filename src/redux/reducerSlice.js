@@ -12,10 +12,10 @@ const reducer = createSlice({
   reducers: {
     getFlightsArr: (state, action) => {
       state.flights = action.payload;
+      console.log(state.flights);
     },
     setQueryDate: (state, action) => {
       state.queryDate = action.payload;
-      console.log(state.queryDate);
     },
     setRotateParam: (state, action) => {
       state.rotateParam = action.payload;
@@ -23,7 +23,6 @@ const reducer = createSlice({
     getNewFlightsArr: (state, action) => {
       const newFlights = action.payload;
       state.flights = [...newFlights, ...state.flights];
-      // console.log(state.flights);
     },
   },
 });
