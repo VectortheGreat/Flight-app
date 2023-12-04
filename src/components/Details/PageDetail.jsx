@@ -78,10 +78,10 @@ const PageDetail = () => {
       isMounted = false;
     };
   }, [lastElement]);
-  console.log(flight);
-  console.log("loadingFlight", loadingFlight);
-  console.log("loadingAirline", loadingAirline);
-  console.log("loadingAircraft", loadingAircraft);
+  // console.log(flight);
+  // console.log("loadingFlight", loadingFlight);
+  // console.log("loadingAirline", loadingAirline);
+  // console.log("loadingAircraft", loadingAircraft);
 
   return (
     <div className="bg-gray-200 p-8">
@@ -98,61 +98,61 @@ const PageDetail = () => {
           </div>
         </div>
       ) : (
-        <div className="bg-gray-200 p-8">
-          <h1 className="text-2xl font-bold mb-4">
-            {flight.flightName} flight to
-          </h1>
-          <h1 className="text-2xl font-bold mb-4">{destination}</h1>
-          <div className="grid grid-cols-3 gap-4">
-            <div>
-              <h2 className="text-lg font-semibold">Date</h2>
-              <h2 className="text-lg">{flight.scheduleDate}</h2>
-            </div>
-            <div>
-              {rotate === "departures" && (
-                <>
-                  <h2 className="text-lg font-semibold">Departure time</h2>
-                  <h2 className="text-lg">{flight.scheduleTime}</h2>
-                </>
-              )}
-              {rotate === "arrivals" && (
-                <>
-                  <h2 className="text-lg font-semibold">Arrival time</h2>
-                  <h2 className="text-lg">{flight.scheduleTime}</h2>
-                  <h2 className="text-lg">{flight.actualLandingTime}</h2>
-                </>
-              )}
-            </div>
-            <div>
-              <h2 className="text-lg font-semibold">Airline Code</h2>
-              <h2 className="text-lg">{flight.airlineCode}</h2>
-            </div>
-            <div>
-              <h2 className="text-lg font-semibold">Airlines</h2>
-              <h2 className="text-lg">{airlineData.publicName}</h2>
-            </div>
-            <div>
-              <h2 className="text-lg font-semibold">Aircraft Type</h2>
-              <h2 className="text-lg">{airCraftData.shortDescription}</h2>
-            </div>
-            <div>
-              {rotate === "departures" && (
-                <>
-                  <h2 className="text-lg font-semibold">Gate</h2>
-                  <h2 className="text-lg">{flight.gate}</h2>
-                </>
-              )}
-              {rotate === "arrivals" && (
-                <>
-                  <h2 className="text-lg font-semibold">Baggage Belt</h2>
-                  <h2 className="text-lg">
-                    {flight.baggageClaim?.belts[0] ?? "-"}
-                  </h2>
-                </>
-              )}
-            </div>
+        <div className="bg-gray-200 p-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="col-span-full">
+            <h1 className="text-2xl font-bold mb-4">
+              {flight.flightName} flight to
+            </h1>
+            <h1 className="text-2xl font-bold mb-4">{destination}</h1>
           </div>
-          <div className="mt-8">
+          <div>
+            <h2 className="text-lg font-semibold">Date</h2>
+            <h2 className="text-lg">{flight.scheduleDate}</h2>
+          </div>
+          <div>
+            {rotate === "departures" && (
+              <>
+                <h2 className="text-lg font-semibold">Departure time</h2>
+                <h2 className="text-lg">{flight.scheduleTime}</h2>
+              </>
+            )}
+            {rotate === "arrivals" && (
+              <>
+                <h2 className="text-lg font-semibold">Arrival time</h2>
+                <h2 className="text-lg">{flight.scheduleTime}</h2>
+                <h2 className="text-lg">{flight.actualLandingTime}</h2>
+              </>
+            )}
+          </div>
+          <div>
+            <h2 className="text-lg font-semibold">Airline Code</h2>
+            <h2 className="text-lg">{flight.airlineCode}</h2>
+          </div>
+          <div>
+            <h2 className="text-lg font-semibold">Airlines</h2>
+            <h2 className="text-lg">{airlineData.publicName}</h2>
+          </div>
+          <div>
+            <h2 className="text-lg font-semibold">Aircraft Type</h2>
+            <h2 className="text-lg">{airCraftData.shortDescription}</h2>
+          </div>
+          <div>
+            {rotate === "departures" && (
+              <>
+                <h2 className="text-lg font-semibold">Gate</h2>
+                <h2 className="text-lg">{flight.gate}</h2>
+              </>
+            )}
+            {rotate === "arrivals" && (
+              <>
+                <h2 className="text-lg font-semibold">Baggage Belt</h2>
+                <h2 className="text-lg">
+                  {flight.baggageClaim?.belts[0] ?? "-"}
+                </h2>
+              </>
+            )}
+          </div>
+          <div className="col-span-full mt-8">
             <h1 className="text-2xl font-bold text-red-500">
               {getFlightStatus(flight)}
             </h1>

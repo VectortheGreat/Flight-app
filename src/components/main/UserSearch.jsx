@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { useDispatch } from "react-redux";
 import { setQueryDate } from "../../redux/reducerSlice";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const UserSearch = () => {
   UserSearch.propTypes = {
@@ -13,11 +13,12 @@ const UserSearch = () => {
   const [selectedDate, setSelectedDate] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const param = useParams();
+  const location = useLocation();
 
   useEffect(() => {
     const today = new Date();
     const formattedDates = [];
+    const locationDate = location.search.split("=")[1];
 
     const yesterday = subDays(today, 1);
     const formattedYesterday = format(yesterday, "yyyy-MM-dd");
@@ -42,17 +43,32 @@ const UserSearch = () => {
       const displayDate = format(date, "d MMMM");
       formattedDates.push({ value: formattedDate, label: displayDate });
     }
-
+    const foundDate = formattedDates.find(
+      (date) => date.value === locationDate
+    );
     setDates(formattedDates);
-    setSelectedDate(formattedToday);
-    dispatch(setQueryDate(formattedToday));
+    setSelectedDate(foundDate ? foundDate.value : formattedToday);
+    dispatch(setQueryDate(foundDate ? foundDate.value : formattedToday));
   }, [setQueryDate]);
 
   const setQueryDateFunc = (e) => {
+    const date = new Date();
+    const formatTimeComponent = (component) => {
+      return component < 10 ? "0" + component : component;
+    };
+    const year = formatTimeComponent(date.getFullYear());
+    const month = formatTimeComponent(date.getMonth() + 1);
+    const datee = formatTimeComponent(date.getDate());
+    const formatedDate = `${year}-${month}-${datee}`;
+
     const selectedDate = e.target.value;
     setSelectedDate(selectedDate);
     dispatch(setQueryDate(selectedDate));
-    navigate(`?datetime=${selectedDate}&query=${param.query || ""}`);
+    if (formatedDate === selectedDate) {
+      navigate(``);
+    } else {
+      navigate(`?datetime=${selectedDate}`);
+    }
   };
 
   return (

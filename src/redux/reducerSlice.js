@@ -4,6 +4,10 @@ const initialState = {
   flights: [],
   queryDate: "",
   rotateParam: "",
+  searchParam: "",
+  loadingAirline: false,
+  loadingDestination: false,
+  loadingAircraft: false,
 };
 
 const reducer = createSlice({
@@ -12,7 +16,6 @@ const reducer = createSlice({
   reducers: {
     getFlightsArr: (state, action) => {
       state.flights = action.payload;
-      console.log(state.flights);
     },
     setQueryDate: (state, action) => {
       state.queryDate = action.payload;
@@ -20,14 +23,39 @@ const reducer = createSlice({
     setRotateParam: (state, action) => {
       state.rotateParam = action.payload;
     },
-    getNewFlightsArr: (state, action) => {
+    getLaterFlightsArr: (state, action) => {
+      const newFlights = action.payload;
+      state.flights = [...state.flights, ...newFlights];
+    },
+    getEarlierFlightsArr: (state, action) => {
       const newFlights = action.payload;
       state.flights = [...newFlights, ...state.flights];
+    },
+    setSearchParam: (state, action) => {
+      state.searchParam = action.payload;
+    },
+    setLoadingAirline(state, action) {
+      state.loadingAirline = action.payload;
+    },
+    setLoadingDestination(state, action) {
+      state.loadingDestination = action.payload;
+    },
+    setLoadingAircraft(state, action) {
+      state.loadingAircraft = action.payload;
     },
   },
 });
 
-export const { getFlightsArr, setQueryDate, setRotateParam, getNewFlightsArr } =
-  reducer.actions;
+export const {
+  getFlightsArr,
+  setQueryDate,
+  setRotateParam,
+  getLaterFlightsArr,
+  getEarlierFlightsArr,
+  setSearchParam,
+  setLoadingAirline,
+  setLoadingDestination,
+  setLoadingAircraft,
+} = reducer.actions;
 
 export default reducer.reducer;

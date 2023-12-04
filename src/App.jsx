@@ -15,7 +15,9 @@ function App() {
   const dispatch = useDispatch();
   const flights = useSelector((state) => state.reducer.flights);
   const queryDate = useSelector((state) => state.reducer.queryDate);
+  const searchParam = useSelector((state) => state.reducer.searchParam);
   const [rotate, setRotate] = useState("");
+  const searchParamValue = searchParam.split("=")[1];
   useEffect(() => {
     const date = new Date();
     const formatTimeComponent = (component) => {
@@ -24,17 +26,17 @@ function App() {
     const hours = formatTimeComponent(date.getHours());
     const minutes = formatTimeComponent(date.getMinutes());
     const fromDateTime = `${queryDate}T${hours}:${minutes}:00`;
+    const fromDateTimeSpecialDate = `${searchParamValue}T00:00:00`;
     const fetchDatas = async () => {
       try {
         const dataFlight = await getFlights(
-          queryDate,
+          searchParamValue || queryDate,
           rotate,
-          fromDateTime,
+          searchParamValue ? fromDateTimeSpecialDate : fromDateTime,
           null,
           0,
           "+scheduleTime"
         );
-        console.log(dataFlight);
         dispatch(getFlightsArr(dataFlight.flights));
       } catch (error) {
         console.error("Error fetching flights:", error);

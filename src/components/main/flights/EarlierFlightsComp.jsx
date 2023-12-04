@@ -2,7 +2,7 @@ import { useState } from "react";
 import { getFlights } from "../../../config/config";
 import { useDispatch, useSelector } from "react-redux";
 import PropTypes from "prop-types";
-import { getNewFlightsArr } from "../../../redux/reducerSlice";
+import { getEarlierFlightsArr } from "../../../redux/reducerSlice";
 
 const EarlierFlightsComp = ({ rotate }) => {
   EarlierFlightsComp.propTypes = {
@@ -27,7 +27,7 @@ const EarlierFlightsComp = ({ rotate }) => {
       setPageEarlierCounter(pageEarlierCounter + 1);
       //prettier-ignore
       const dataFlight = await getFlights(queryDate,rotate,fromDateTime,toDateTime,pageEarlierCounter,"-scheduleTime");
-      dispatch(getNewFlightsArr([...dataFlight.flights].reverse()));
+      dispatch(getEarlierFlightsArr([...dataFlight.flights].reverse()));
     } catch (error) {
       console.error("Error fetching more flights:", error);
     }

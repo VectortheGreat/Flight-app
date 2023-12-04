@@ -34,14 +34,9 @@ export const getFlights = async (
         sort: sort,
       },
     });
-    console.log("scheduleDate", scheduleDate);
-    console.log("flightDirection", flightDirection);
-    console.log("fromDateTime", fromDateTime);
-    console.log("toDateTime", toDateTime);
     return response.data;
   } catch (error) {
     console.error("Error fetching flights:", error);
-    //throw error;
   }
 };
 

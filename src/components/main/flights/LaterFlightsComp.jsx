@@ -2,13 +2,15 @@ import PropTypes from "prop-types";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getFlights } from "../../../config/config";
-import { getNewFlightsArr } from "../../../redux/reducerSlice";
+import { getLaterFlightsArr } from "../../../redux/reducerSlice";
+
 const LaterFlightsComp = ({ rotate }) => {
   LaterFlightsComp.propTypes = {
     rotate: PropTypes.string.isRequired,
   };
   const queryDate = useSelector((state) => state.reducer.queryDate);
   const dispatch = useDispatch();
+
   const date = new Date();
   const formatTimeComponent = (component) => {
     return component < 10 ? "0" + component : component;
@@ -24,7 +26,7 @@ const LaterFlightsComp = ({ rotate }) => {
       setPageCounter(pageCounter + 1);
       //prettier-ignore
       const dataFlight = await getFlights(queryDate,rotate,fromDateTime,null,pageCounter,"+scheduleTime");
-      dispatch(getNewFlightsArr([...dataFlight.flights]));
+      dispatch(getLaterFlightsArr([...dataFlight.flights]));
     } catch (error) {
       console.error("Error fetching more flights:", error);
     }
